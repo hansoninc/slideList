@@ -7,7 +7,9 @@
 		showButton: '#filter',
 		forwardButtonClass: '.list-group-item',
 		backButtonClass: '.go-back',
-		slideClass: '.slide'
+		slideClass: '.slide',
+		animationDuration: 500,
+		mobileMaxWidth: 767
 	};
 
 	function Plugin ( element, options ) {
@@ -27,8 +29,10 @@
 		 * Initiates plugin
 		 */
 		init: function () {
+
 			this.totalSlides = $(this.element).find(this.settings.slideClass).length;
-			this.setSliderHeight();
+			this.setSliderHeight(0);
+			this.goToSlide(0, 0);
 
 			// get reference to plugin
 			var module = this;
@@ -40,24 +44,46 @@
 			        module.slideProgression(1);
 			    }
 			});
+
 			$(this.settings.showButton).not(module.settings.backButtonClass).on('click', function () {
-			    $(module.element).toggleClass('mobile-showing-filters');
-			    module.setSliderHeight();
-			    module.goToSlide(0);
+
+				if ( $(module.element).is(':visible') ) {
+					$(module.element).animate({
+						minHeight: 0
+					}, module.settings.animationDuration, function() { $(module.element).hide(); });
+				} else {
+					$(module.element).show();
+					module.goToSlide(0, 0);
+					module.setSliderHeight();
+				}
 			});
+
+			$(window).resize( function() {
+				if ($(this).width() > module.settings.mobileMaxWidth) {
+					$(module.element).show();
+				} else {
+					$(module.element).css('display', '');
+				}
+				module.setSliderHeight(0);
+			});
+			
 		},
 
 		/**
 		 * Go to the specified slide (int)
 		 * @param  {integer}
 		 */
-		goToSlide: function(slideNum) {
+		goToSlide: function(slideNum, animationDuration) {
+
+			// default duration
+			animationDuration = typeof animationDuration !== 'undefined' ? animationDuration : this.settings.animationDuration;
+
 			// stay within bounds
 			if (slideNum < this.totalSlides) {
 			    $(this.element).find(this.settings.slideClass).each(function () {
 			        var slide = $(this);
 			        var index = slide.index();
-			        var leftPos = 0;
+			        var leftPos = '0%';
 			        slide.removeClass('current');
 			        if (index < slideNum) {
 			            leftPos = '-110%';
@@ -66,9 +92,9 @@
 			        } else {
 			            slide.addClass('current');
 			        }
-			        slide.css({
+			        slide.animate({
 			            left: leftPos
-			        });
+			        }, animationDuration);
 			    });
 			    this.currentSlide = slideNum;
 			}
@@ -85,12 +111,12 @@
 
 		/**
 		 * Sets the height of the slider based on the current slide
-		 * NOTE: RUN setSliderHeight(); WHEN LEAVING MOBILE BREAKPOINT
 		 */
-		setSliderHeight: function() {
-			$(this.element).css({
+		setSliderHeight: function(animationDuration) {
+			animationDuration = typeof animationDuration !== 'undefined' ? animationDuration : this.settings.animationDuration;
+			$(this.element).animate({
 				minHeight: $(this.settings.slideClass+'.current').height()
-			});
+			}, animationDuration);
 		}
 		
 	});
