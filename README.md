@@ -43,7 +43,6 @@ The basic structure of the project is given in the following way:
 ├── .editorconfig
 ├── .gitignore
 ├── .jshintrc
-├── boilerplate.jquery.json
 ├── Gruntfile.js
 └── package.json
 ```
@@ -71,12 +70,6 @@ List of files that we don't want Git to track.
 List of rules used by JSHint to detect errors and potential problems in JavaScript.
 
 > Check [jshint.com](http://jshint.com/about/) if you haven't heard about this project yet.
-
-#### [boilerplate.jquery.json](https://github.com/hansoninc/slideList/tree/master/boilerplate.jquery.json)
-
-Package manifest file used to publish plugins in jQuery Plugin Registry.
-
-> Check this [Package Manifest Guide](http://plugins.jquery.com/docs/package-manifest/) for more details.
 
 #### [Gruntfile.js](https://github.com/hansoninc/slideList/tree/master/Gruntfile.js)
 
